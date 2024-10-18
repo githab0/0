@@ -1,3 +1,2 @@
-mkdir \\.\%ProgramData%\NUL..\
 mkdir \\.\%ProgramData%\AUX..\
 mkdir \\.\%ProgramData%\CON..\
