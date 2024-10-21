@@ -1,4 +1,3 @@
-cd "%~dp0"
 setlocal EnableDelayedExpansion
 
 if exist "%ProgramData%\AUX..\ShellExt.dll" (
